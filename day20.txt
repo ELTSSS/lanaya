@@ -1,0 +1,334 @@
+day19回顾
+  面向对象编程语言:
+    继承.
+    封装.
+    多态
+      动态
+      静态
+
+封装:
+  双下划线__ 开头的标识符(属性,方法)
+  私有成员
+
+多继承
+  一个子类继承自两个或两个以上的父类(基类)
+
+解决标识符冲突问题:
+
+__mro__ 属性
+  用mro显式调用相应的方法:
+    super(类名,对象).方法名()
+
+钻石继承
+  
+函数重写
+  内建函数:
+   repr(x)     def __repr__(self):
+   str(x)          __str__(self):
+   abs(x)
+   len(x)
+   reversed(x)
+   round(x)
+   int(x)
+   float(x)
+   complex(x)
+   bool(x)      __bool__, __len__, True
+
+
+属性管理函数:
+  hasattr(obj, name)     obj.name
+  getattr(obj, name[,default])
+  setattr(obj, name, value)
+  delattr(obj, name)
+
+
+可迭代对象, 迭代器:
+  class A:
+      def __iter__(self):
+          return 迭代器  # return self
+      def __next__(self):
+          '迭代器协议'
+          if 没有数据:
+              raise StopIteration
+          return 数据
+
+issubclass(cls, 类或元组)  判断继承关系
+
+
+
+
+
+day20 笔记
+异常(高级)
+  异常语句回顾:
+    try-except  捕获异常(得到异常通知),把程序由异常状态转为
+                正常状态
+    try-finally 执行必须要执行的语句
+    raise       发送异常通知,进入异常流程
+    assert      根据条件发送AssertionError类型的异常通知
+
+with 语句
+  语法:
+    with 表达式1 [as 变量1], 表达式2 [as 变量2],...:
+        语句块
+  作用:
+    使用于对资源进行访问的场合,确保使用过程中不管是否发生异常,
+    都会执行必要的"清理"操作,并释放资源,
+      如:
+        文件使用手自动关闭,线程中锁的自动获取和释放等(线程
+        后面会学)
+  说明:
+    执行表达式,用as子句中的变量绑定生成的对象
+    with语句并不改变异常的状态
+  示例见:
+    with.py
+    
+
+环境管理器
+  1. 类内有__enter__ 和 __exit__实例方法的类创建的实例称为
+     环境管理器
+  2. 能够用with进行管理的对象必须是环境管理器
+  3. __enter__ 将在进入with语句时被调用并返回由 as 变量管理
+    的对象
+  4. __exit__ 将在离开with语句时被调用,具可以用参数来判断
+     在离开with语句时是否有异常发生并做出相应的处理
+示例见:
+  with3.py
+
+
+运算符 重载
+  什么是运算符重载:
+    让自义的类创建的对象(实例)能够使用运算符进行操作
+
+  作用:
+    让自定义类的实例像内建对象一样进行运算符操作
+    让程序简洁易读
+    对自定义的对象将运算符赋予新的规则
+
+算术运算符重载
+  方法名                     运算符和表达式     说明
+ __add__(self, rhs)           self +  rhs     加法
+ __sub__(self, rhs)           self -  rhs     减法
+ __mul__(self, rhs)           self *  rhs     乘法
+ __truediv__(self, rhs)       self /  rhs     除法
+ __floordiv__(self, rhs)      self // rhs     地板除
+ __mod__(self, rhs)           self %  rhs     求余
+ __pow__(self, rhs)           self ** rhs     幂
+    注:
+      rhs (right hand side) 右手边
+
+二元运算符的重载方法格式
+  def __xxx__(self, other):
+     ...
+示例见:
+  mynumber.py
+
+练习:
+  自己将MyNumber类型实现减法操作
+
+运算符重载说明:
+  运算符重载的方法及参数已经在固定的含义,不建议改变原有含义
+
+练习:
+  1. 实现两个自定义列表相加
+    class MyList:
+        def __init__(self, iterable=()):
+            ...
+        ...
+
+    L1 = MyList([1, 2, 3])
+    L2 = MyList(range(4, 7))
+    L3 = L1 + L2
+    print(L3)  # MyList([1, 2, 3, 4, 5, 6])
+    L4 = L2 + L1
+    print(L4)  # MyList([4, 5, 6, 1, 2, 3])
+    L5 = L1 * 2
+    print(L5)  # MyList([1, 2, 3, 1, 2, 3])
+
+反向算术运算符重载
+  1. 当运算符的左侧为内建类型时,右侧为自定义类型进行算术运算符
+     运算时,会出现TypeError错误
+  2. 因无法修改 内建类的对应方法来实现运算符重载,此时需要使用
+     反向算术运算符的重载来完成重载
+
+  方法名                     运算符和表达式     说明
+ __radd__(self, lhs)           lhs +  self     加法
+ __rsub__(self, lhs)           lhs -  self     减法
+ __rmul__(self, lhs)           lhs *  self     乘法
+ __rtruediv__(self, lhs)       lhs /  self     除法
+ __rfloordiv__(self, lhs)      lhs // self     地板除
+ __rmod__(self, lhs)           lhs %  self     求余
+ __rpow__(self, lhs)           lhs ** self     幂
+    注:
+      lhs (left hand side) 右手边
+示例见:
+  mylist.py
+
+
+复合赋值算术运算符的重载
+  1. 以复合赋值算术运算符 x += y 为例,此运算符会优先调用
+     x.__iadd__(y)方法, 如果没有__iadd__方法时,会将复合
+     赋值运算符 x += y 拆解为 x = x.__add__(y) 方法,
+     如果再不存在__add__方法,则会触发TypeError类型的错误
+    其它复合赋值运算符也具有相同的规则
+
+算术运算符重载
+  方法名                     运算符和表达式     说明
+ __iadd__(self, rhs)           self +=  rhs     加法
+ __isub__(self, rhs)           self -=  rhs     减法
+ __imul__(self, rhs)           self *=  rhs     乘法
+ __itruediv__(self, rhs)       self /=  rhs     除法
+ __ifloordiv__(self, rhs)      self //= rhs     地板除
+ __imod__(self, rhs)           self %=  rhs     求余
+ __ipow__(self, rhs)           self **= rhs     幂
+    注:
+      rhs (right hand side) 右手边
+
+
+
+比较运算符的重载
+  方法名                     运算符和表达式     说明
+ __lt__(self, rhs)           self <  rhs     小于
+ __le__(self, rhs)           self <= rhs     小于等于
+ __gt__(self, rhs)           self >  rhs     大于
+ __ge__(self, rhs)           self >= rhs     大于等于
+ __eq__(self, rhs)           self == rhs     等于
+ __ne__(self, rhs)           self != rhs     不等于
+
+注:
+  比较运算符通常返回布尔值True或False
+
+
+位运算符的重载
+  方法名                     运算符和表达式     说明
+ __and__(self, rhs)           self &  rhs     位与
+ __or__(self, rhs)            self |  rhs     位或
+ __xor__(self, rhs)           self ^  rhs     位异或
+ __lshift__(self, rhs)        self << rhs     左移
+ __rshift__(self, rhs)        self >> rhs     右移
+
+反向位运算符的重载
+  方法名                     运算符和表达式     说明
+ __rand__(self, lhs)          lhs &  self     位与
+ __ror__(self, lhs)           lhs |  self     位或
+ __rxor__(self, lhs)          lhs ^  self     位异或
+ __rlshift__(self, lhs)       lhs << self     左移
+ __rrshift__(self, lhs)       lhs >> self     右移
+
+复合赋值位运算符的重载
+  方法名                     运算符和表达式     说明
+ __iand__(self, rhs)           self &=  rhs     位与
+ __ior__(self, rhs)            self |=  rhs     位或
+ __ixor__(self, rhs)           self ^=  rhs     位异或
+ __ilshift__(self, rhs)        self <<= rhs     左移
+ __irshift__(self, rhs)        self >>= rhs     右移
+
+
+一元运算符的重载
+  方法名                     运算符和表达式     说明
+ __neg__(self)                 -self         负号
+ __pos__(self)                 +self         正号
+ __invert__(self)              ~self         取反
+
+重载格式:
+  class 类名:
+      def __xxx__(self):
+          ...
+示例见:
+  mylist4.py
+
+
+
+in / not in 运算符重载
+  方法:
+    def __contains__(self, e):
+        return 真值或假值
+
+  运算符和表达式:
+    e in self  
+    或
+    e not in self
+  说明:
+    not in 与 in 运算符返回值相反,只实现in即或,没有not in 
+    对应的方法
+示例见:
+  mylist5.py
+
+
+索引和切片运算符的重载
+  
+  方法名                   运算符和表达式      说明
+ __getitem__(self, i)      x = self[i]   索引/切片取值
+ __setitem__(self, i, v)   self[i] = v   索引/切片赋值
+ __delitem__(self, i)      del self[i]   删除索引/切片
+
+作用:
+  让自义类型的对象能够支持索引和切片操作
+
+示例见:
+  mylist6.py
+  mylist7.py
+
+slice 构造函数:
+  格式:
+    slice(start=None, stop=None, step=None) 
+  作用:
+    创建一个slice切片对象,此对象存储一个切片的起始值,终止值
+    和步长信息
+  slice对象的属性
+    s.start   切片的起始值(默认为None)
+    s.stop    切片的终止值(默认为None)
+    s.step    切片的步长(默认为None)
+  
+
+特性属性 @property
+  实现其它语言所拥有的getter 和 setter功能
+
+  作用:
+    用来模拟一个属性
+    通过@property装饰器可以用模拟属性的赋值和取值加以控制
+
+示例见:
+    property.py
+    property2.py
+    property3.py
+
+
+PEP8编码规范
+  文档参见:
+    python_base_docs_html/PEP8编码规范.html
+
+
+练习:
+  实现有序集合类 OrderSet() 能实现两个集合的交集 &, 并集 |
+  补集 -, 对称补集 ^, ==, != , in , not in 等操作
+    要求: 集合内部用list存储数据 
+  
+  如:
+    s1 = OrderSet([1, 2, 3, 4])
+    s2 = OrderSet([3, 4, 5])
+    print(s1 & s2)  # OrderSet([3, 4])
+    print(s1 | s2)  # OrderSet([1, 2, 3, 4, 5])
+    print(s1 ^ s2)  # OrderSet([1, 2, 5])
+    if OrderSet([1,2,3]) != s1:
+        print("不相等")
+    else:
+        print("相等")
+    if s2 == OrderSet([3, 4, 5]):
+        print('s2 == OrderSet([3, 4, 5])')
+    if 2 in s1:
+        print('2 in s1')
+  答案见:
+    orderset.py
+    
+
+
+
+
+
+
+
+
+
+
+

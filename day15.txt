@@ -1,0 +1,313 @@
+day14回顾
+  异常
+    异常是一种错误通知机制(信号通知),可以快速将错误信息传达
+    给调用者
+  异常相关的语句:
+    try-except 语句
+        捕获(接收) 错误通知,将异常状态改为正常状态
+    try-finally 语句
+        此语句能保证在(正常流程/异常流程)都能执行必须要
+        执行的语句
+    raise 语句
+        发出异常通知,把程序转为异常状态(进入异常流程)
+    assert 语句
+        当条件不满足时,触发AssertionError类型的错误通知
+
+迭代器 Iterator
+   迭代器是用来访问可迭代对象的工具
+
+  iter(可迭代对象)  从可迭代对象中获取迭代器
+  next(迭代器)     通过迭代器从可迭代对象中取值,没有值时
+                  会触发StopIteration异常通知
+
+
+
+
+day15 笔记:
+生成器 Generator
+  生成器是能够动态提供数据的可迭代对象
+  生成器在程序运行时生成数据,与容器类不同,它通常不会在内存在
+  保存大量的数据,而是现用现生成
+
+生成器有两种:
+  生成器函数
+  生成器表达式
+
+生成器函数:
+  含有yield 语句的函数是生成器函数,此函数被调用将返回一个                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  生成
+  器对象
+  yield 翻译为产生(或生成)
+
+yield 语句 
+  语法:
+    yield 表达式
+  说明:
+    yield 用于def 函数中,目的是将此函数作为生成器函数使用
+    yield 用来生成数据,供迭代器的next(it) 函数使用
+  示例见:
+    myyield.py
+
+生成器函数说明:
+  生成器函数调用将返回一个生成器对象,生成器对象是一个可迭代对象
+  生成器对象通常是一次性的,通常不可重复使用
+  在生成器函数调用return 会触发一个StopIteration异常(即生
+    成数据结束)
+
+  生成器的示例:
+    myinteger.py
+    
+练习:
+  写一个生成器函数 myeven(start, stop)  # 用来生成从
+    start 开始到stop结束区间内的一系列偶数(不包含stop)
+  如 :
+    def myeven(start, stop):
+        ....  # 此处自己实现
+ 
+    evens = list(myeven(10, 20))
+    print(evens)  # [10, 12, 14, 16, 18]
+    for x in myeven(21, 30):
+        print(x)   # 打印22, 24, 26, 28
+
+
+生成器表达式
+  语法:
+    (表达式 for 变量 in 可迭代对象 [if 真值表达式])
+
+  说明:
+    if 子句的部分可以省略
+  作用:
+    用推导式形式创建新的生成器
+  示例:
+    gen = (x**2 for x in range(1, 5))
+    it = iter(gen)
+    next(it)  # 1
+    next(it)  # 4
+    next(it)  # 9
+    next(it)  # 16
+    next(it)  # StopIteration
+
+生成器说明:
+  生成器即是可迭代对象,同时它自身也是迭代器
+
+
+练习:
+  1. 已知有列表:
+        L  = [2, 3, 5, 7]
+    1) 写一个生成器函数,让此函数能够动态的提供数据,数据
+       为原列表中数字的平方加1 即 : x**2+1
+    2) 写一个生成器表达式,让此表达式能够动态提供数据,数据
+       同样为原列表中的数字的平方加1
+    3) 生成一个列表,此列表内的数据为原列表L中的数字的平方加1
+
+    最终生成的数为:  5  10  26  50
+
+  2. 试写一个生成器函数 myfilter(func, iterable)
+    要求此函数与python内建的函数的功能完全相同
+    如:
+      def myfilter(func, iterable):
+          ....
+        
+      for i in myfilter(lambda x: x%2==1, range(10)):
+          print(i)  # 1 3 5 7 9
+
+  3. 看下面两个程序的执行结果是什么? 为什么?
+    # 程序1
+    L = [2, 3, 5, 7]
+    A = [x*10 for x in L]
+    it = iter(A)
+    print(next(it))  # 20
+    L[1] = 333
+    print(next(it))  # 30
+
+    # 程序2
+    L = [2, 3, 5, 7]
+    A = (x*10 for x in L)  # <<< 注[] 改为了()
+    it = iter(A)
+    print(next(it))  # 20
+    L[1] = 333
+    print(next(it))  # 3330
+
+
+迭代工具函数:
+  迭代工具函数的作用是返回一个可迭代对象
+
+   函数              说明
+ zip(iter1, iter2, iter3, ....)  返回一个zip生成器对象,
+    此对象生成一个元组,此元组中的数据分别来自于iter1, iter2,
+    ..., 可迭代对象提供的数据个数由最小的可迭代对象参数决定
+ enumerate(iterable, start=0) 创建一个enumerate生成器对
+    象,此对象生成类型为(索引,值)对的元组,默认索引从零开始,
+    也可以用start指定
+
+zip 示例
+  numbers = [10086, 10000, 10010, 95588]
+  names = ['中国移动', '中国电信', '中国联通']
+  for t in zip(numbers, names):
+      print(t)
+  for name, numb in zip(names, numbers):
+      print(name, '的客服电话是', numb)
+
+  for t in zip(numbers, names, range(1, 10000)):
+      print(t)  # (10086, '中国移动', 1), ....
+
+示意 zip 函数的内部实现原理,示例见:
+    myzip.py
+
+enumerate 函数示例:
+    names = ['中国移动', '中国电信', '中国联通']
+    for t in enumerate(names):
+        print(t)  # (0, '中国移动')  (1, '中国电信')
+    
+    for t in enumerate(names, 101):
+        print(t)  # (101, '中国移动'), (102, ....)
+    
+    for index, name in enumerate(names):
+        if name == '中国联通':
+            del names[index]  # 根据索引删除元素
+            break
+
+
+
+练习:
+  自己实现一个myenumerate函数,功能与enumerate功能完全一致
+  如:
+    def myenumerate(iterable, start=0):
+        ... # 此处自己实现
+    
+    for t in myenumerate(names, 101):
+        print(t)  # (101, '中国移动'), (102, ....)
+
+
+容器
+  列表list
+  字符串 str
+  字典 dict
+  元组tuple
+  集合set
+  固定集合 frozenset
+
+序列:
+  str , list , tuple, bytes, bytearray
+
+字节串 bytes 和 字节数组 bytearray
+字节串(也叫字节序列) bytes 
+  作用:
+    存储以字节为单位的数据
+    字节串是不可变的字节序列
+
+字节(byte)
+  字节是由8个位(bit) 组成的存储单元
+  字节是0~255之间的整数,用来表示一个字节的取值
+
+创建空字节串的字面值:
+  b''
+  b""
+  b''''''
+  b""""""
+
+创建非空字节串的字面值:
+  B = b'ABCD'
+  B = b"ABCD"
+  B = b'\x41\x42'
+
+字节串的构造函数 bytes
+  bytes()   生成一个空的字节串 等同于 b''
+  bytes(整数可迭代对象)  用可迭代对象生成一个字节串
+  bytes(整数n)     生成n个值为0的字节串
+  bytes(字符串, encoding='utf-8')  用字符串的转换编码
+          生成一个字节串
+
+示例:
+   B = bytes()  # B=b''
+   B = bytes([65, 66, 67, 68])  # B=b'ABCD'
+   B = bytes(5)    # B = b'\x00\x00\x00\x00\x00'
+   B = bytes("hello", 'utf-8')  # B=b'hello'
+   B = bytes("ABC中文", 'utf-8')  # B=
+
+bytes 的运算:
+  +   +=   *   *=  
+  <  <=  >  >=  ==  != 
+  in  /  not in
+  索引/切片
+
+  示例:
+    B = b"ABC123"
+    b'12' in B  # True
+    65 in B     # True
+    print(B[2])  # 67
+    print(B[0::2])  # b'AC2'
+
+能用于字节串和字节数组的函数:
+  len(x), max(x), min(x), sum(x), any(x), all(x)
+
+bytes 与 str 的区别:
+  bytes 存储字节(0~255的整数)
+  str 存储UNICODE字符(0~65535~0x10FFFF的整数)
+
+bytes 与 str 转换
+         编码(encode)
+  str ----------------> bytes
+      b = s.encode(encoding='utf-8')
+    
+         解码(decode)
+  bytes --------------> str
+      s = b.decode(encoding='utf-8')
+
+示例:
+   s = 'ABC中文'
+   b = s.encode()   # 用utf-8编码规则转为字节串
+   s2 = b.decode()  # 用utf-8编码规则解码为字符串
+   print(s == s2)  # True
+
+
+字节数组 bytearray
+  可变的字节序列
+
+构造函数
+  bytearray()   创建空的字节数组
+  bytearray(整数可迭代对象)
+  bytearray(整数n)
+  bytearray(字符串, encoding='utf-8')
+    (以上参数规则同字节串的规则, 返回类型为bytearray)
+运算:
+  + += * *=
+  < <= > >= == !=
+  in / not in 
+  索引 / 切片
+    注: 字节数组支持索引赋值和切片赋值,规则同列表的索引和
+        切片赋值
+  示例:
+    ba = bytearray([65, 32, 67, 100, 69])
+    ba[1] = 66
+    ba[3] = 68
+
+
+练习:
+  1. 实现一个python2下的xrange([start], stop, [step])
+    生成器函数,此生成函数按range规则来生成一系列整数
+    要求:
+      myxrange功能与range功能完全相同
+      不允许调用range函数和列表
+  用自己写的myxrange结果生成器表达式求 1~10以内所有奇数的
+    平方和
+  如:
+    def myxrange(start, stop=None, step=None):
+         ....以下自己实现
+    求:1 ** 2 + 3 ** 2 + 5 **2 + ...  9 ** 2
+
+  2. 写一个程序,从键盘输入一段字符串,用变量s绑定
+     1) 将此字符串转为字节串用变量b绑定,并打印出此字节串b
+     2) 打印字符串s的长度和字节串b的长度
+     3) 将字节串b再转换为字符串用变量s2 绑定,然后判断
+       s2 和 s是否相同
+
+  3. 分解质因数,输入一个正整数,分解质因数
+     如
+       输入: 90
+     打印            
+       90 = 2*3*3*5
+    注: 质因数是指最小能被原数整数的素数(不包括1)
+
+  4. 预习文件操作, 面向对象
+    -  
+

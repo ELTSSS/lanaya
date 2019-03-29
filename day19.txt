@@ -1,0 +1,298 @@
+day18 回顾
+
+      创建
+  类  --->   实例(对象)
+      描述
+
+类是用class语句创建的对象工厂
+  类属性
+    __base__ 属性,记录父类(基类)
+    __doc__ 属性,记录文档字符串
+    __slots__列表
+       __slots__ = ['name','age', 'score']
+  类方法 (@classmethod)
+    @classmethod
+    def mycls_method(cls, ....):
+        ...
+  
+静态方法:
+  @staticmethod装饰器
+    @staticmethod
+    def my_static_method(x, y, z):
+       ....
+
+面向过程编程
+   函数
+面向对象编程
+  类                  对象
+    实例方法
+    类方法
+    静态方法
+
+继承
+  父类(基类)     子类(派生类)
+
+单继承
+  语法:
+    class MyClass(父类):
+        pass
+
+覆盖 override
+  作用:
+    修改/替换父类的行为(方法)
+  有继承关系,子类实现了与父类同名的方法,子类对象来调用这个方法,
+  才会实现覆盖
+
+显式调用父类的覆盖方法:
+  类名.方法名(对象, 传参)
+  super(类名, 对象).方法名(传参)
+  super().方法名(传参)  # <<---此方法只能用的子类的实例方法内
+
+显式调用 __init__(self, ....)
+
+示例:
+    class Dog:
+        pass
+    dog1 = Dog()  # 没错
+
+    class Dog:
+        def __init__(self, color, kinds):
+            super().__init__()
+    dog1 = Dog()  # 有错
+
+
+day19笔记:
+函数
+  issubclass(cls, class_or_tuple) 判断一个类是否继承自
+        class 或 tuple中的一个类,如果cls是class或tuple
+        中的一个类的子类,则返回True
+示例:
+  class A:
+      pass
+
+  class B(A):
+      pass
+
+  class C(B):
+      pass
+  issubclass(C, B)   # True
+  issubclass(B, C)   # False
+  
+
+封装 enclosure
+  封装是指隐藏类的实现细节,让使用者不关用关心这些细节
+  封装的目的是让使用者通过尽可能少的方法(或属性) 操作对象
+
+私有属性和方法
+  python类中以双下划线(__) 开头,不以双下划线结尾的标识符为
+  私有成员,私有成员只能使用方法来进行访问
+
+示例见:
+  enclosure.py
+
+
+多态 polymophic
+  字面意思:  多种状态
+
+  状态:
+    静态(编译时状态)
+    动态(运行时状态)
+  说明:
+    1. 动态 调用方法与对象相关,不与类型相关
+    2. python全部的对象都只有"运行时状态(动态)", 没有C++语言
+       里的"编译时状态(静态)"
+示例见:
+  poly.py
+
+面向对象编程语言的特征:
+  继承
+  封装
+  多态
+
+面向对象(思想)
+
+
+
+多继承 multiple inheritance
+  语法:
+    class 类名(基类名1, 基类名2, ....):
+        ...
+  说明:
+    1. 一个子类同时继承自多个父类,父类中的方法可以同时被继承下来
+    2. 如果两个父类中有同名的方法,而在子类中又没有覆盖此方法,调
+       用结果难以确定
+  示例见:
+    multiple_inherit.py
+    
+多继承的问题
+  标识符冲突的问题
+    要谨慎使用多继承
+  示例:
+    multi_inherit2.py
+
+多继承的 MRO(Method Resolution Order) 问题
+  类的 __mro__属性
+    此属性用于记录当前类的方法的查找顺序
+  
+钻石继承(又名棱形继承)
+    A
+   / \
+  B   C
+   \ /
+    D
+示例见:
+  diamond_inherit.py
+
+
+
+对象转字符串函数的使用
+  repr(x)  返回一个符合Python语法规则且能代表此对象的表
+          达式字符串
+      通常:
+        eval(repr(obj)) == obj  为True
+  str(x)  返回一个代表对象的字符串(这个字符串通常是给我阅读的)
+
+  示例:
+    s = "I'm a Teacher"
+    sr = repr(s)
+    ss = str(s)
+    print(sr)
+    print(ss)
+
+
+函数重写
+  什么是函数重写
+    在自定义的类内添加相应的方法,让自定义的类创建的对象
+    能像内建对象一样进行内建函数操作
+
+对象转字符串函数的重写方法
+  repr() 函数的重写方法
+      def __repr__(self):
+          ....
+  str() 函数的重写方法:
+      def __str__(self):
+          ...
+
+str(obj)  函数说明:
+    1. str(obj) 函数先查找obj.__str__() 方法,调用此方法
+       并返回结果
+    2. 如果obj.__str__() 方法不存在,则调用obj.__repr__
+       方法并返回结果
+    3. 如果obj.__repr__() 方法不存在,则调用object类的
+       __str__实例方法显示<__main__.Xxxx object 
+       at 0xXXXXXXXX> 格式的字符串
+示例见:
+  mynumber.py
+
+内建函数的重写
+   方法名           说明
+  __abs__       abs(obj) 函数调用
+  __len__       len(obj) 函数调用
+  __reversed__  reversed(obj) 函数调用 
+  __round__     round(obj) 函数调用
+
+示例见:
+  len_overwrite.py
+
+
+数据转换函数重写
+     方法名           对应函数名
+  __complex__       complex(x)
+  __int__           int(x)
+  __float__         float(x)
+  __bool__          bool(x)
+
+示例见:
+  mynumber3.py
+
+
+布尔测试函数的重写
+  格式:
+    def __bool__(self):
+        return 布尔值
+  作用:
+    用于bool(obj) 函数取值
+    用于if语句真值表达式中
+    用于 while 语句的真值表达式中
+  说明:
+    1. 当自定义的类内有__bool__(self) 方法时, bool(obj)
+       调用此方法返回值
+    2. 当不存在__bool__(self)方法时,bool(obj) 返回 
+       obj.__len__()的值,判断是否为零来测试布尔值
+    3. 当不存在__len__(self) 方法时,则直接返回 True
+  示例见:
+    bool.py
+
+
+
+
+对象的属性管理函数:
+  参见文档:
+    内建函数(builtins).html
+  函数:
+    getattr(obj, name[, default])
+    hasattr(obj, name)
+    setattr(obj, name, value)
+    delattr(obj, name)
+  示例:
+    class Dog:
+        pass
+    d = Dog()
+    d.color = '白色'
+
+
+迭代器(高级)
+  什么是迭代器:
+    可以通过next函数取值的对象就是迭代器
+  迭代器协议
+    迭代器协议是指对象能够使用next函数获取下一项数据,在没有
+    下一项数据时触发一个StopIteration异常 来终止迭代的约定
+  迭代器协议实现的方法:
+       方法名                   对应函数
+    def __next__(self):         next(obj)
+  
+  什么是可迭代对象:
+    是指能用iter(obj) 函数返回迭代器的对象叫可迭代对象
+    可迭代对象内部需要定义__iter__(self)方法来返回迭代器
+
+        方法名              对应函数
+    def __iter__(self):     iter(obj)
+
+  示例见:
+    iterable.py
+
+小结:
+  有__iter__方法的对象叫可迭代对象
+  有__next__方法的对象叫做迭代器
+
+
+练习:
+  实现一个与系统内建的range类相同功能的类
+    class MyRange:
+        def __init__(self, ...):
+            ...
+        def __iter__(self):
+            ...
+  测试调用如下:
+    L = list(range(5))
+    print(L)  # [0, 1, 2, 3, 4]
+    print(sum(MyRange(1, 101)))  # 5050
+    L2 = [x**2 for x in MyRange(1, 10, 3)]
+    print(L2)  # [1, 4, 7]
+    for x in MyRange(10, 0, -3):
+        print(x)  # 打印: 10, 7, 4, 1
+
+
+练习:
+  修改原学生管理系统的Student类, 将此类创建的对象的实例属性
+  name, age, score 改为私有属性隐藏起来,让此类以外的代码无法
+  访问对象的属性
+
+
+
+
+
+
+
+
+
