@@ -1,1 +1,26 @@
 
+mysql -uroot -p123456
+create database SSS default charset utf8;
+show databases;
+use SSS;
+create table allstudent(
+    student_id int unsigned not null auto_increment primary key,
+    student_name varchar(30)default '',
+    gender enum("男","女"),
+    student_department varchar(32) not null,
+    student_major varchar(32) not null
+);
+create table report(
+    student_id int unsigned not null,
+    student_name varchar(30)default '',
+    A1 int  not null,
+    A2 int  not null,
+    A3 int  not null,
+    A4 int  not null,
+    A5 int  not null,
+    A6 int  not null
+);
+create table mima(
+    student_id int unsigned not null,
+    mima1 varchar(32) not null
+);
